@@ -6,14 +6,15 @@ from bs4 import BeautifulSoup
 import os
 import sys
 
-manga_name = '' #'akame_ga_kiru'  # 'shokugeki_no_soma'  # 'fairy_tail';
+root_url = ''  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
 if len(sys.argv[1]) != 0:
-    manga_name = sys.argv[1]
-print('Manga Name:', manga_name)
-manga_num = '' #'9229'  # '12114'  # 246
-if len(sys.argv[2]) != 0:
-    manga_num = sys.argv[2]
-print('Manga #:', manga_num)
+    root_url = sys.argv[1]
+
+manga_name = root_url.split('/')[-3]
+print('Manga Name:',manga_name)
+firstPage = requests.get(root_url);
+manga_num = ((firstPage.text.split('/get_chapters'))[1].split('.js?')[0])
+print('Manga #',manga_num)
 location = '/Volumes/Personal/Media/Manga/'+manga_name
 pathsep = '/'
 progressFile = location+pathsep+manga_name+'_progress.txt';
@@ -89,3 +90,4 @@ for chapter in chapterList:
             finished_chapters.append(name)
             with open(progressFile, mode='a', encoding='UTF-8') as b_file:
                 b_file.write(name+'\n')
+print(manga_name, 'downloaded successfully')

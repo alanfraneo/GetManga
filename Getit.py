@@ -2,8 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-manga_name = 'akame_ga_kiru'  # 'shokugeki_no_soma'  # 'fairy_tail';
-manga_num = '9229'  # '12114'  # 246
+root_url = 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
+manga_name = root_url.split('/')[-3]
+print('Name:',manga_name)
+firstPage = requests.get(root_url);
+manga_num = ((firstPage.text.split('/get_chapters'))[1].split('.js?')[0])
+print('Num:',manga_num)
+
 location = '/Volumes/Personal/Media/Manga/'+manga_name
 pathsep = '/'
 progressFile = location+pathsep+manga_name+'_progress.txt';
@@ -15,7 +20,6 @@ chapterListText = ((chapters.text.split(start))[1].split(end)[0])
 chapterList = chapterListText.split(sep='\n')
 # print(chapterList)
 finished_chapters = ['Example Chapter'];
-
 if not os.path.exists(location):
     os.makedirs(location)
 
