@@ -1,9 +1,19 @@
+#!/Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4
+__author__ = 'alan-1554'
+
 import requests
 from bs4 import BeautifulSoup
 import os
+import sys
 
-manga_name = 'akame_ga_kiru'  # 'shokugeki_no_soma'  # 'fairy_tail';
-manga_num = '9229'  # '12114'  # 246
+manga_name = '' #'akame_ga_kiru'  # 'shokugeki_no_soma'  # 'fairy_tail';
+if len(sys.argv[1]) != 0:
+    manga_name = sys.argv[1]
+print('Manga Name:', manga_name)
+manga_num = '' #'9229'  # '12114'  # 246
+if len(sys.argv[2]) != 0:
+    manga_num = sys.argv[2]
+print('Manga #:', manga_num)
 location = '/Volumes/Personal/Media/Manga/'+manga_name
 pathsep = '/'
 progressFile = location+pathsep+manga_name+'_progress.txt';
