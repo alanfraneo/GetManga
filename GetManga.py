@@ -10,7 +10,7 @@ root_url = ''  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c
 if len(sys.argv[1]) != 0:
     root_url = sys.argv[1]
 
-manga_name = root_url.split('/')[-3]
+manga_name = ((root_url.split('/manga/'))[1].split('/')[0])
 print('Manga Name:',manga_name)
 firstPage = requests.get(root_url);
 manga_num = ((firstPage.text.split('/get_chapters'))[1].split('.js?')[0])
