@@ -30,8 +30,8 @@ else:
 
 for chapter in chapterList:
     if len(chapter) > 0 and ',' in chapter:
-        values = chapter.split(',')
-        name = values[0].strip()[2:-1]
+        values = chapter.split('","')
+        name = values[0].strip()[2:]
         name = name.replace(':', '-')
         name = name.replace('&quot;', '')
         if name in finished_chapters:
@@ -41,12 +41,12 @@ for chapter in chapterList:
             directory = location+pathsep+name
             if not os.path.exists(directory):
                 os.makedirs(directory)
-
+            print('chapter:', chapter)
             url = values[1].replace('"+series_name+"',manga_name)
-            url = url.strip()[1: -2]
+            url = url.strip()[: -3]
             # print('Name:', name)
             # print('URL:', url)
-            print(url)
+            print("url:", url)
             r = requests.get(url)
             soup = BeautifulSoup(r.text, 'html.parser')
             select_boxes = soup.find_all('select')
