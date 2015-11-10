@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import sys
+import PIL
 
 root_url = ''  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
 if len(sys.argv[1]) != 0:
@@ -86,9 +87,16 @@ for chapter in chapterList:
                     lists = img_url.rsplit('/', 1)
                     filename = directory+pathsep + lists[1];
 
+                dont_download = False
                 if os.path.exists(filename):
                     print(filename, 'already downloaded')
-                else:
+                    img = PIL.Image.open(filename, 'r')
+                    try:
+                        img.load()
+                        dont_download = True
+                    except IOError | OSError:
+                        print('but file is corrupt')
+                if dont_download is False:
                     img = requests.get(img_url)
                     print('saving to', filename)
                     f = open(filename, 'wb')
