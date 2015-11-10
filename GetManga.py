@@ -14,7 +14,7 @@ manga_name = ((root_url.split('/manga/'))[1].split('/')[0])
 print('Manga Name:',manga_name)
 firstPage = requests.get(root_url);
 manga_num = ((firstPage.text.split('/get_chapters'))[1].split('.js?')[0])
-print('Manga #',manga_num)
+print('Manga #', manga_num)
 location = '/Volumes/Personal/Media/Manga/'+manga_name
 pathsep = '/'
 progressFile = location+pathsep+manga_name+'_progress.txt';
@@ -44,7 +44,7 @@ for chapter in chapterList:
         name = name.replace(':', '-')
         name = name.replace('&quot;', '')
         if name in finished_chapters:
-            print('Chapter:',name, 'already downloaded');
+            print('Chapter:', name, 'already downloaded');
         else:
             print('Downloading chapter:', name)
             directory = location+pathsep+name
