@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import sys
-import PIL
+from PIL import Image
 
 root_url = ''  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
 if len(sys.argv[1]) != 0:
@@ -45,7 +45,7 @@ for chapter in chapterList:
         name = name.replace(':', '-')
         name = name.replace('&quot;', '')
         if name in finished_chapters:
-            print('Chapter:', name, 'already downloaded');
+            print('Chapter:', name, 'already downloaded')
         else:
             print('Downloading chapter:', name)
             directory = location+pathsep+name
@@ -63,7 +63,7 @@ for chapter in chapterList:
             box = ''
             for select_box in select_boxes:
                 if select_box['onchange'] == 'change_page(this)':
-                    box = select_box;
+                    box = select_box
             # print(box.contents)
             pages = []
             for option in box.contents:
@@ -78,24 +78,25 @@ for chapter in chapterList:
                 pageSoup = BeautifulSoup(pageContent.text, 'html.parser')
                 imageSection = pageSoup.find(id="image")
                 # imgTag = imageSection.img[1]
-                img_url = imageSection['src'];
+                img_url = imageSection['src']
                 print(img_url)
                 filename = directory + pathsep + 'dummy.png'
                 if '?v' in img_url:
                     filename = directory+pathsep + ((img_url.split('d/'))[1].split('?v')[0])
                 else:
                     lists = img_url.rsplit('/', 1)
-                    filename = directory+pathsep + lists[1];
+                    filename = directory+pathsep + lists[1]
 
                 dont_download = False
                 if os.path.exists(filename):
                     print(filename, 'already downloaded')
-                    img = PIL.Image.open(filename, 'r')
+                    img = Image.open(filename, 'r')
                     try:
                         img.load()
-                        dont_download = True
-                    except IOError | OSError:
+                    except (IOError, OSError) as e:
                         print('but file is corrupt')
+                    else:
+                        dont_download = True
                 if dont_download is False:
                     img = requests.get(img_url)
                     print('saving to', filename)
