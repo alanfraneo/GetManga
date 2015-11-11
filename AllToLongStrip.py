@@ -4,7 +4,10 @@ from PIL import Image
 import os
 import sys
 
-root_folder = '/Volumes/Personal/Media/Manga/girl_the_wild_s/Ch 206/'
+root_folder = '/Volumes/Personal/Media/Manga/girl_the_wild_s/'
+output_folder = 'longstrip'
+pathsep = os.path.sep
+
 split = True
 extn = '.png'
 if len(sys.argv) > 1:
@@ -12,8 +15,8 @@ if len(sys.argv) > 1:
     if len(sys.argv) > 2:
         split = sys.argv[2]
 
-if not root_folder.endswith(os.path.sep):
-    root_folder += os.path.sep
+if not root_folder.endswith(pathsep):
+    root_folder += pathsep
 
 
 def append(opfile, ipfile):
@@ -41,16 +44,17 @@ def append(opfile, ipfile):
 
 file_list = []
 for root, dirs, files in os.walk(root_folder):
-    for eachfile in files:
-        if not str(eachfile).startswith('.'):
-            file_list.append(os.path.join(root, eachfile))
+    for each_dir in dirs:
+        print('Processing', each_dir)
+        op_path = root_folder+output_folder+pathsep+each_dir
+        if not os.path.exists(op_path):
+            os.makedirs(op_path)
+        else:
+            print(each_dir, ' has already been converted to long strip format, '
+                            'to retry delete the folder and try again')
+            continue
 
-filenamecount = 1
-count = 1
-for eachfile in file_list:
-    if count == 9 and split == True:
-        count = 1
-        filenamecount += 1
-    print('adding', eachfile, '...')
-    append(root_folder+str(filenamecount)+extn, eachfile)
-    count += 1
+        for roo, directories, filez in os.walk(os.path.join(root, each_dir)):
+            for each_file in filez:
+                if not str(each_file).startswith('.'):
+                    append(op_path+pathsep+each_dir+extn, os.path.join(roo, each_file))

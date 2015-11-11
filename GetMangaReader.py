@@ -19,7 +19,7 @@ def zerofill(number):
 
 root_url = 'http://www.mangareader.net/naruto/1'  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
 root_location = '/Volumes/Personal/Media/Manga/'
-pathsep = '/'
+pathsep = os.path.sep
 
 if len(sys.argv) > 1:
     root_url = sys.argv[1]
@@ -82,14 +82,14 @@ for chapter in chaptersJson:
             pageSoup = BeautifulSoup(pageContent.text, 'html.parser')
             imageSection = pageSoup.find(id="img")
             # imgTag = imageSection.img[1]
-            img_url = imageSection['src'];
+            img_url = imageSection['src']
             print(img_url)
             filename = directory + pathsep + 'dummy.png'
             if '?v' in img_url:
                 filename = directory+pathsep + ((img_url.split('d/'))[1].split('?v')[0])
             else:
                 lists = img_url.rsplit('/', 1)
-                filename = directory+pathsep + lists[1];
+                filename = directory+pathsep + lists[1]
 
             if os.path.exists(filename):
                 print(filename, 'already downloaded')

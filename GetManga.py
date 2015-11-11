@@ -17,7 +17,7 @@ firstPage = requests.get(root_url);
 manga_num = ((firstPage.text.split('/get_chapters'))[1].split('.js?')[0])
 print('Manga #', manga_num)
 location = '/Volumes/Personal/Media/Manga/'+manga_name
-pathsep = '/'
+pathsep = os.path.sep
 progressFile = location+pathsep+manga_name+'_progress.txt';
 chapters = requests.get('http://www.mangahere.co/get_chapters'+manga_num+'.js')
 start = 'var chapter_list = new Array(';

@@ -17,7 +17,7 @@ import os
 
 
 root_folder = '/Volumes/Personal/Media/Manga/girl_the_wild_s'
-pathsep = '/'
+pathsep = os.path.sep
 server_folder = root_folder+pathsep+'httpserver'
 html_file = server_folder+pathsep+'htmlfile.html'
 
