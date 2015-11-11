@@ -55,7 +55,7 @@ for chapter in chaptersJson:
     name = name.replace('&#039;', '\'')
     name = name.replace('&amp;', '&')
     url = 'http://www.mangareader.net'+chapter['chapterlink']
-    if name in finished_chapters:
+    if any(name.strip() in chap for chap in finished_chapters):
         print('Chapter:', name, 'already downloaded')
     else:
         print('Downloading chapter:', name)
