@@ -45,16 +45,17 @@ def append(opfile, ipfile):
 file_list = []
 for root, dirs, files in os.walk(root_folder):
     for each_dir in dirs:
-        print('Processing', each_dir)
-        op_path = root_folder+output_folder+pathsep+each_dir
-        if not os.path.exists(op_path):
-            os.makedirs(op_path)
-        else:
-            print(each_dir, ' has already been converted to long strip format, '
+        if output_folder not in each_dir:
+            print('Processing', each_dir)
+            op_path = root_folder+output_folder+pathsep+each_dir
+            if not os.path.exists(op_path):
+                os.makedirs(op_path)
+            else:
+                print(each_dir, ' has already been converted to long strip format, '
                             'to retry delete the folder and try again')
-            continue
+                continue
 
-        for roo, directories, filez in os.walk(os.path.join(root, each_dir)):
-            for each_file in filez:
-                if not str(each_file).startswith('.'):
-                    append(op_path+pathsep+each_dir+extn, os.path.join(roo, each_file))
+            for roo, directories, filez in os.walk(os.path.join(root, each_dir)):
+                for each_file in filez:
+                    if not str(each_file).startswith('.'):
+                        append(op_path+pathsep+each_dir+extn, os.path.join(roo, each_file))

@@ -17,7 +17,7 @@ def zerofill(number):
         return str(number)
 
 
-root_url = 'http://www.mangareader.net/naruto/1'  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
+root_url = 'http://www.mangareader.net/naruto/1'  # Sample url: 'http://www.mangareader.net/naruto/1'
 root_location = '/Volumes/Personal/Media/Manga/'
 pathsep = os.path.sep
 
