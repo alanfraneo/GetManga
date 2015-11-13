@@ -6,7 +6,7 @@ import os
 import sys
 
 root_url = 'http://tamiltunes.com/ilayaraja-hits-3404-tamil-songs-3.html'
-root_folder = '/Volumes/Personal/Music'
+root_folder = 'E:\Music'
 folder_name = ''
 if len(sys.argv) > 1:
     root_url = sys.argv[1]
@@ -33,8 +33,10 @@ for eachA in aList:
     if 'href' in eachA.attrs:
         href = eachA.attrs['href']
         if str(href).endswith('.mp3'):
-            print(href)
+            print('Downloading', href)
             filename = root_folder+os.path.sep+eachA.text
+            filename = filename.replace(' – TamilWire.com', '')
+            filename = filename.replace('\u2013', '-')
             img = requests.get(href)
             print('saving to', filename)
             f = open(filename, 'wb')
