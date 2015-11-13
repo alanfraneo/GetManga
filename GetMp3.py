@@ -47,8 +47,4 @@ for eachA in aList:
             else:
                 print(filename, 'already downloaded')
 
-<<<<<<< HEAD
 print('All mp3 files from', root_url, 'downloaded successfully')
-=======
-print('All mp3 files from', soup.title, 'downloaded successfully')
->>>>>>> 46e34d7567e20a6e9e55f30906b6e5423cc74eb4
