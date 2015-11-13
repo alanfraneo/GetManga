@@ -19,7 +19,7 @@ if folder_name != '':
 
 # print(page.text)
 
-soup = BeautifulSoup(page.text, 'html.parser')
+soup = BeautifulSoup(page.text, 'html.parser', )
 
 aList = soup.find_all('a')
 
@@ -33,14 +33,18 @@ for eachA in aList:
     if 'href' in eachA.attrs:
         href = eachA.attrs['href']
         if str(href).endswith('.mp3'):
-            print('Downloading', href)
             filename = root_folder+os.path.sep+eachA.text
             filename = filename.replace(' – TamilWire.com', '')
             filename = filename.replace('\u2013', '-')
-            img = requests.get(href)
-            print('saving to', filename)
-            f = open(filename, 'wb')
-            f.write(img.content)
-            f.close()
+            filename = filename.replace('\u2026', '')
+            if not os.path.exists(filename):
+                print('Downloading', href)
+                img = requests.get(href)
+                print('saving to', filename)
+                f = open(filename, 'wb')
+                f.write(img.content)
+                f.close()
+            else:
+                print(filename, 'already downloaded')
 
-print('All mp3 files from', soup.title, 'downloaded successfully')
+print('All mp3 files from', root_url, 'downloaded successfully')
