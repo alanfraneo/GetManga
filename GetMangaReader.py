@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 import os
 import sys
 import json
-import urllib.parse
 
 
 def zerofill(number):

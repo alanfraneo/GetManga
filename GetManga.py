@@ -44,7 +44,8 @@ for chapter in chapterList:
         name = values[0].strip()[2:]
         name = name.replace(':', '-')
         name = name.replace('&quot;', '')
-        if name in finished_chapters:
+        name = name.replace('- Fixed','')
+        if any(name in chap for chap in finished_chapters):
             print('Chapter:', name, 'already downloaded')
         else:
             print('Downloading chapter:', name)

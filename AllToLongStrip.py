@@ -9,7 +9,7 @@ output_folder = 'longstrip'
 pathsep = os.path.sep
 
 split = True
-extn = '.png'
+extn = '.jpeg'  # png images are huge, nearly 8 times the size, 3.7mb becomes 24mb
 if len(sys.argv) > 1:
     root_folder = sys.argv[1]
     if len(sys.argv) > 2:
@@ -39,7 +39,7 @@ def append(opfile, ipfile):
     else:
         new_img.paste(img1, (0, 0))
         new_img.paste(img2, (0, img1size[1]))
-    new_img.save(opfile)
+    new_img.save(opfile, format='JPEG', subsampling=0, quality=95)
 
 
 file_list = []
