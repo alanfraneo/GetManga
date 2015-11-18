@@ -1,5 +1,4 @@
-#!/Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4
-__author__ = 'alan-1554'
+#  __author__ = "alan.francis"  #
 
 import requests
 from bs4 import BeautifulSoup
@@ -13,20 +12,20 @@ if len(sys.argv[1]) != 0:
 
 manga_name = ((root_url.split('/manga/'))[1].split('/')[0])
 print('Manga Name:',manga_name)
-firstPage = requests.get(root_url);
+firstPage = requests.get(root_url)
 manga_num = ((firstPage.text.split('/get_chapters'))[1].split('.js?')[0])
 print('Manga #', manga_num)
 location = '/Volumes/Personal/Media/Manga/'+manga_name
 pathsep = os.path.sep
-progressFile = location+pathsep+manga_name+'_progress.txt';
+progressFile = location+pathsep+manga_name+'_progress.txt'
 chapters = requests.get('http://www.mangahere.co/get_chapters'+manga_num+'.js')
-start = 'var chapter_list = new Array(';
+start = 'var chapter_list = new Array('
 end = ');'
 chapterListText = ((chapters.text.split(start))[1].split(end)[0])
 # print(chapterListText)
 chapterList = chapterListText.split(sep='\n')
 # print(chapterList)
-finished_chapters = ['Example Chapter'];
+finished_chapters = ['Example Chapter']
 
 if not os.path.exists(location):
     os.makedirs(location)
