@@ -18,8 +18,8 @@ def is_folder_valid(path_name):
                 file_list.append(os.path.join(root, eachfile))
 
     for eachfile in file_list:
-        fimg = Image.open(eachfile, 'r')
         try:
+            fimg = Image.open(eachfile, 'r')
             fimg.load()
         except (IOError, OSError) as exc:
             print(eachfile, 'not downloaded properly')
@@ -65,6 +65,7 @@ for chapter in chapterList:
         name = name.replace(':', '-')
         name = name.replace('&quot;', '')
         name = name.replace('- Fixed', '')
+        name = name.replace('&amp;', '&')
         directory = location+pathsep+name
         images_valid = False
         already_present = False
@@ -110,8 +111,8 @@ for chapter in chapterList:
                 dont_download = False
                 if os.path.exists(filename):
                     print(filename, 'already downloaded')
-                    img = Image.open(filename, 'r')
                     try:
+                        img = Image.open(filename, 'r')
                         img.load()
                     except (IOError, OSError) as e:
                         print('but file is corrupt')
@@ -121,6 +122,8 @@ for chapter in chapterList:
                     try:
                         img = requests.get(img_url)
                         print('saving to', filename)
+                        if os.path.exists(filename):
+                            os.remove(filename)
                         f = open(filename, 'wb')
                         f.write(img.content)
                         f.close()
