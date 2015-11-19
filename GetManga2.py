@@ -6,8 +6,31 @@ import os
 import sys
 from PIL import Image
 
-root_url = ''  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
-if len(sys.argv[1]) != 0:
+
+def is_folder_valid(path_name):
+    is_valid = True
+    file_list = []
+    excluded_extn = ['.txt']
+    for root, dirs, files in os.walk(path_name):
+        for eachfile in files:
+            fname, ext = os.path.splitext(eachfile)
+            if not str(eachfile).startswith('.') and ext not in excluded_extn:
+                file_list.append(os.path.join(root, eachfile))
+
+    for eachfile in file_list:
+        fimg = Image.open(eachfile, 'r')
+        try:
+            fimg.load()
+        except (IOError, OSError) as exc:
+            print(eachfile, 'not downloaded properly')
+            is_valid = False
+        except Exception as e2:
+            print(eachfile, 'error')
+            is_valid = False
+    return is_valid
+
+root_url = 'http://www.mangahere.co/manga/tokyo_ghoul_re/c001/'  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
+if len(sys.argv) > 1:
     root_url = sys.argv[1]
 
 manga_name = ((root_url.split('/manga/'))[1].split('/')[0])
@@ -22,9 +45,7 @@ chapters = requests.get('http://www.mangahere.co/get_chapters'+manga_num+'.js')
 start = 'var chapter_list = new Array('
 end = ');'
 chapterListText = ((chapters.text.split(start))[1].split(end)[0])
-# print(chapterListText)
 chapterList = chapterListText.split(sep='\n')
-# print(chapterList)
 finished_chapters = ['Example Chapter']
 
 if not os.path.exists(location):
@@ -43,20 +64,25 @@ for chapter in chapterList:
         name = values[0].strip()[2:]
         name = name.replace(':', '-')
         name = name.replace('&quot;', '')
-        name = name.replace('- Fixed','')
-        if any(name in chap for chap in finished_chapters):
+        name = name.replace('- Fixed', '')
+        directory = location+pathsep+name
+        images_valid = False
+        already_present = False
+        if name in finished_chapters:
+            already_present = True
             print('Chapter:', name, 'already downloaded')
-        else:
+            images_valid = is_folder_valid(directory)
+            if not images_valid:
+                print('but some images are corrupt, downloading again...')
+
+        if not images_valid or not already_present:
             print('Downloading chapter:', name)
-            directory = location+pathsep+name
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            # print('chapter:', chapter)
             url = values[1].replace('"+series_name+"', manga_name)
             url = url.strip()[: -3]
             # print('Name:', name)
             # print('URL:', url)
-            print("url:", url)
             r = requests.get(url)
             soup = BeautifulSoup(r.text, 'html.parser')
             select_boxes = soup.find_all('select')
@@ -64,28 +90,22 @@ for chapter in chapterList:
             for select_box in select_boxes:
                 if select_box['onchange'] == 'change_page(this)':
                     box = select_box
-            # print(box.contents)
             pages = []
             for option in box.contents:
                 if '\n' != str(option):
-                    # print('page url:', option['value'])
                     pages.append(str(option['value']).strip())
-            # print(pages)
 
             for eachPage in pages:
                 pageContent = requests.get(eachPage)
-                # print(pageContent.text);
                 pageSoup = BeautifulSoup(pageContent.text, 'html.parser')
                 imageSection = pageSoup.find(id="image")
-                # imgTag = imageSection.img[1]
                 img_url = imageSection['src']
-                print(img_url)
+                # print(img_url)
                 filename = directory + pathsep + 'dummy.png'
                 if '?v' in img_url:
                     filename = directory+pathsep + ((img_url.split('d/'))[1].split('?v')[0])
                 else:
-                    lists = img_url.rsplit('/', 1)
-                    filename = directory+pathsep + lists[1]
+                    filename = directory+pathsep + (img_url.rsplit('/', 1))[1]
 
                 dont_download = False
                 if os.path.exists(filename):
@@ -98,12 +118,17 @@ for chapter in chapterList:
                     else:
                         dont_download = True
                 if dont_download is False:
-                    img = requests.get(img_url)
-                    print('saving to', filename)
-                    f = open(filename, 'wb')
-                    f.write(img.content)
-                    f.close()
+                    try:
+                        img = requests.get(img_url)
+                        print('saving to', filename)
+                        f = open(filename, 'wb')
+                        f.write(img.content)
+                        f.close()
+                    except Exception as ie:
+                        os.system('say "Manga Download Error"')
+
             finished_chapters.append(name)
             with open(progressFile, mode='a', encoding='UTF-8') as b_file:
                 b_file.write(name+'\n')
 print(manga_name, 'downloaded successfully')
+os.system('say "Manga Download complete"')
