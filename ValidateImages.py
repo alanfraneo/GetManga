@@ -29,8 +29,8 @@ errorcount = 0
 for eachfile in file_list:
     #if file_list.index(eachfile) != 0 and file_list.index(eachfile) % 100 == 0:
         #print(file_list.index(eachfile), 'files processed')
-    img = Image.open(eachfile, 'r')
     try:
+        img = Image.open(eachfile, 'r')
         img.load()
     except (IOError, OSError) as e:
         print(eachfile, 'not downloaded properly')
