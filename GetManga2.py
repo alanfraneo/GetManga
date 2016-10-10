@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import os
 import sys
 from PIL import Image
+from multiprocessing import Pool
 
 
 def is_folder_valid(path_name):
@@ -29,9 +30,52 @@ def is_folder_valid(path_name):
             is_valid = False
     return is_valid
 
-root_url = 'http://www.mangahere.co/manga/tokyo_ghoul_re/c001/'  # Sample url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
+
+def download_image_from_page(page):
+    pagecontent = requests.get(page)
+    pagesoup = BeautifulSoup(pagecontent.text, 'html.parser')
+    imagesection = pagesoup.find(id="image")
+    img_url = imagesection['src']
+    # print(img_url)
+    filename = directory + pathsep + 'dummy.png'
+    if '?v' in img_url:
+        filename = directory + pathsep + ((img_url.split('d/'))[1].split('?v')[0])
+    else:
+        filename = directory + pathsep + (img_url.rsplit('/', 1))[1]
+
+    dont_download = False
+    if os.path.exists(filename):
+        print(filename, 'already downloaded')
+        try:
+            img = Image.open(filename, 'r')
+            img.load()
+        except (IOError, OSError) as e:
+            print('but file is corrupt')
+        else:
+            dont_download = True
+    if dont_download is False:
+        try:
+            img = requests.get(img_url)
+            print('saving to', filename)
+            if os.path.exists(filename):
+                os.remove(filename)
+            f = open(filename, 'wb')
+            f.write(img.content)
+            f.close()
+        except Exception as ie:
+            os.system('say "Manga Download Error"')
+
+# eg root_url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
+root_url = 'http://www.mangahere.co/manga/tomo_chan_wa_onnanoko/c437/'
+thread_count = 5
 if len(sys.argv) > 1:
     root_url = sys.argv[1]
+    if len(sys.argv) > 2:
+        thread_count = sys.argv[2]
+else:
+    print("Incorrect no of parameters passed. format: python3 GetManga2.py <chapter_url> <thread_count>")
+    print("e.g.: python3 GetManga2.py http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/ 5")
+    exit(0)
 
 manga_name = ((root_url.split('/manga/'))[1].split('/')[0])
 print('Manga Name:',manga_name)
@@ -96,39 +140,8 @@ for chapter in chapterList:
                 if '\n' != str(option):
                     pages.append(str(option['value']).strip())
 
-            for eachPage in pages:
-                pageContent = requests.get(eachPage)
-                pageSoup = BeautifulSoup(pageContent.text, 'html.parser')
-                imageSection = pageSoup.find(id="image")
-                img_url = imageSection['src']
-                # print(img_url)
-                filename = directory + pathsep + 'dummy.png'
-                if '?v' in img_url:
-                    filename = directory+pathsep + ((img_url.split('d/'))[1].split('?v')[0])
-                else:
-                    filename = directory+pathsep + (img_url.rsplit('/', 1))[1]
-
-                dont_download = False
-                if os.path.exists(filename):
-                    print(filename, 'already downloaded')
-                    try:
-                        img = Image.open(filename, 'r')
-                        img.load()
-                    except (IOError, OSError) as e:
-                        print('but file is corrupt')
-                    else:
-                        dont_download = True
-                if dont_download is False:
-                    try:
-                        img = requests.get(img_url)
-                        print('saving to', filename)
-                        if os.path.exists(filename):
-                            os.remove(filename)
-                        f = open(filename, 'wb')
-                        f.write(img.content)
-                        f.close()
-                    except Exception as ie:
-                        os.system('say "Manga Download Error"')
+            pool = Pool(thread_count)
+            pool.map(download_image_from_page, pages)
 
             finished_chapters.append(name)
             with open(progressFile, mode='a', encoding='UTF-8') as b_file:
