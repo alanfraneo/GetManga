@@ -73,8 +73,8 @@ if len(sys.argv) > 1:
     if len(sys.argv) > 2:
         thread_count = sys.argv[2]
 else:
-    print("Incorrect no of parameters passed. format: python3 GetManga2.py <chapter_url> <thread_count>")
-    print("e.g.: python3 GetManga2.py http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/ 5")
+    print("Incorrect no of parameters passed. format: python3 GetManga.py <chapter_url> <thread_count>")
+    print("e.g.: python3 GetManga.py http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/ 5")
     exit(0)
 
 manga_name = ((root_url.split('/manga/'))[1].split('/')[0])
