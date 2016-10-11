@@ -142,6 +142,7 @@ for chapter in chapterList:
 
             pool = Pool(thread_count)
             pool.map(download_image_from_page, pages)
+            pool.terminate()
 
             finished_chapters.append(name)
             with open(progressFile, mode='a', encoding='UTF-8') as b_file:
