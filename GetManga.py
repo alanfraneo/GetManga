@@ -38,8 +38,8 @@ def download_image_from_page(page):
     img_url = imagesection['src']
     # print(img_url)
     filename = directory + pathsep + 'dummy.png'
-    if '?v' in img_url:
-        filename = directory + pathsep + ((img_url.split('d/'))[1].split('?v')[0])
+    if '?' in img_url:
+        filename = directory + pathsep + ((img_url.split('d/'))[1].split('?')[0])
     else:
         filename = directory + pathsep + (img_url.rsplit('/', 1))[1]
 
@@ -66,16 +66,16 @@ def download_image_from_page(page):
             os.system('say "Manga Download Error"')
 
 # eg root_url: 'http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/'
-root_url = 'http://www.mangahere.co/manga/tomo_chan_wa_onnanoko/c437/'
+root_url = 'http://www.mangahere.co/manga/shokugeki_no_soma/c173.1/'
 thread_count = 5
 if len(sys.argv) > 1:
     root_url = sys.argv[1]
     if len(sys.argv) > 2:
         thread_count = int(sys.argv[2])
-else:
-    print("Incorrect no of parameters passed. format: python3 GetManga.py <chapter_url> <thread_count>")
-    print("e.g.: python3 GetManga.py http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/ 5")
-    exit(0)
+# else:
+#     print("Incorrect no of parameters passed. format: python3 GetManga.py <chapter_url> <thread_count>")
+#     print("e.g.: python3 GetManga.py http://www.mangahere.co/manga/akame_ga_kiru_zero/c001/ 5")
+#     exit(0)
 
 manga_name = ((root_url.split('/manga/'))[1].split('/')[0])
 print('Manga Name:',manga_name)
@@ -110,6 +110,7 @@ for chapter in chapterList:
         name = name.replace('&quot;', '')
         name = name.replace('- Fixed', '')
         name = name.replace('&amp;', '&')
+        name = name.replace('&#039;', "'")
         directory = location+pathsep+name
         images_valid = False
         already_present = False
